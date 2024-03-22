@@ -100,7 +100,7 @@ pipeline {
       steps {
           script {
             sh '''
-              npm i -g heroku@7.68.0
+              npm i heroku@7.68.0
               heroku container:login
               heroku create $PRODUCTION || echo "project already exist"
               heroku container:push -a $PRODUCTION web
