@@ -1,11 +1,10 @@
 pipeline {
      environment {
-       ID_DOCKER = "${ID_DOCKER_PARAMS}"
        IMAGE_NAME = "alpinehelloworld"
        IMAGE_TAG = "latest"
 //       PORT_EXPOSED = "80" à paraméter dans le job
-       STAGING = "${ID_DOCKER}-staging"
-       PRODUCTION = "${ID_DOCKER}-production"
+       STAGING = "superpabs-staging"
+       PRODUCTION = "superpabs-production"
      }
      agent none
      stages {
@@ -13,7 +12,7 @@ pipeline {
              agent any
              steps {
                 script {
-                  sh 'docker build -t ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG .'
+                  sh 'docker build -t $DOCKERHUB_PASSWORD_USR/$IMAGE_NAME:$IMAGE_TAG .'
                 }
              }
         }
@@ -24,7 +23,7 @@ pipeline {
                  sh '''
                     echo "Clean Environment"
                     docker rm -f $IMAGE_NAME || echo "container does not exist"
-                    docker run --name $IMAGE_NAME -d -p ${PORT_EXPOSED}:5000 -e PORT=5000 ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG
+                    docker run --name $IMAGE_NAME -d -p ${PORT_EXPOSED}:5000 -e PORT=5000 $DOCKERHUB_PASSWORD_USR/$IMAGE_NAME:$IMAGE_TAG
                     sleep 5
                  '''
                }
@@ -61,7 +60,7 @@ pipeline {
              script {
                sh '''
                    echo $DOCKERHUB_PASSWORD_PSW | docker login -u $DOCKERHUB_PASSWORD_USR --password-stdin
-                   docker push ${ID_DOCKER}/$IMAGE_NAME:$IMAGE_TAG
+                   docker push $DOCKERHUB_PASSWORD_USR/$IMAGE_NAME:$IMAGE_TAG
                '''
              }
           }
