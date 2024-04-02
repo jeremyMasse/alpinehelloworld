@@ -1,3 +1,6 @@
+/* import shared library */
+@Library('shared-library')_
+
 pipeline {
      environment {
        IMAGE_NAME = "alpinehelloworld"
@@ -111,11 +114,10 @@ pipeline {
      }
   }
   post {
-       success {
-         slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - STAGING URL => http://https://superpabs-staging-28a65c7c3d71.herokuapp.com/")
-         }
-      failure {
-            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-          }   
+    always {
+      script {
+        slackNotifier currentBuild.result
+      }
     }  
+  }
 }
