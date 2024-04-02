@@ -117,5 +117,5 @@ pipeline {
             //slackNotifier currentBuild.result
           //}
         //}  
-     //}
+     }
 }
